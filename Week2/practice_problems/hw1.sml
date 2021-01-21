@@ -1,23 +1,26 @@
-fun is_older_old (x : int*int*int, y : int*int*int) =
-    #3 x < #3 y orelse
-    #1 x < #1 y orelse
-    #2 x < #2 y
-
-fun is_older (x : int*int*int, y : int*int*int) =
-    if #1 x < #1 y
-    then true
-    else if #1 x > #1 y
-    then false
-    else
-	if #2 x < #2 y
+fun is_older (date1 : int*int*int, date2 : int*int*int) =
+    let
+	val year1  = #1 date1
+	val month1 = #2 date1
+	val day1   = #3 date1
+	val year2  = #1 date2
+	val month2 = #2 date2
+	val day2   = #3 date2
+    in
+	if year1 < year2
 	then true
-	else if #2 x > #2 y
+	else if year1 > year2
 	then false
 	else
-	    if #3 x < #3 y
+	    if month1 < month2
 	    then true
-	    else false
-		 
+	    else if month1 > month2
+	    then false
+	    else
+		if day1 < day2
+		then true
+		else false
+    end
 
 
 fun number_in_month (dates : (int * int * int) list, month : int) =
@@ -26,10 +29,9 @@ fun number_in_month (dates : (int * int * int) list, month : int) =
     in
 	if null dates
 	then 0
-	else
-	    if in_month(hd dates, month)
-	    then 1 + number_in_month(tl dates, month)
-	    else number_in_month(tl dates, month)
+	else if in_month(hd dates, month)
+	then 1 + number_in_month(tl dates, month)
+	else number_in_month(tl dates, month)
     end
 			  
 
