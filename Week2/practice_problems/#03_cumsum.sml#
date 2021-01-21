@@ -1,0 +1,2 @@
+fun cumsum (xs : int list) =
+    
