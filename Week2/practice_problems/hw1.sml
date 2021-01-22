@@ -1,4 +1,4 @@
-fun is_older (date1 : int*int*int, date2 : int*int*int) =
+fun is_older_prev (date1 : int*int*int, date2 : int*int*int) =
     let
 	val year1  = #1 date1
 	val month1 = #2 date1
@@ -22,6 +22,21 @@ fun is_older (date1 : int*int*int, date2 : int*int*int) =
 		else false
     end
 
+fun is_older (date1 : int*int*int, date2 : int*int*int) =
+    let
+	val year1  = #1 date1
+	val month1 = #2 date1
+	val day1   = #3 date1
+	val year2  = #1 date2
+	val month2 = #2 date2
+	val day2   = #3 date2
+    in
+	year1 < year2 orelse
+	(year1 = year2 andalso month1 < month2) orelse
+	(year1 = year2 andalso month1 = month2 andalso day1 < day2)
+    end
+		   
+				
 
 fun number_in_month (dates : (int * int * int) list, month : int) =
     let fun in_month (date : int * int * int, month : int) =
@@ -49,11 +64,11 @@ fun dates_in_month(dates : (int * int * int) list, month : int) =
     in
 	if null dates
 	then []
-	else
-	    if in_month(hd dates, month)
-	    then (hd dates) :: dates_in_month(tl dates, month)
-	    else dates_in_month(tl dates, month)
+	else if in_month(hd dates, month)
+	then (hd dates) :: dates_in_month(tl dates, month)
+	else dates_in_month(tl dates, month)
     end
+
 	
 fun dates_in_months(dates : (int * int * int) list, months: int list) =
     if null months
@@ -67,16 +82,16 @@ fun get_nth (xs : string list, n : int) =
     then hd xs
     else get_nth(tl xs, n-1)
 
+		
 fun date_to_string(date : (int * int * int)) =
     let
 	val dayStr  = Int.toString(#3 date)
-	val month   = #2 date
 	val yearStr = Int.toString(#1 date)
 	val months = ["January", "February", "March", "April", "May", "June", "July",
 		      "August", "September", "October", "November", "December"]
 		  
     in
-	get_nth(months, month)^"-"^dayStr^"-"^yearStr
+	get_nth(months, #2 date)^" "^dayStr^", "^yearStr
     end
 
 
@@ -105,8 +120,6 @@ fun what_month(day : int) =
 fun month_range(day1 : int, day2 : int) =
     if day1 > day2
     then []
-    else if day1 = day2
-    then what_month(day2):: []
     else what_month(day1) :: month_range(day1+1,day2)
 
 
@@ -120,6 +133,7 @@ fun oldest(dates : (int * int * int) list) =
 	   else SOME (hd dates)
 	end
 
+	    
 fun remove_dups(xs : int list) =
     let 
 	fun remove_from_list(y : int, ys : int list) =
