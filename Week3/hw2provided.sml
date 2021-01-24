@@ -86,6 +86,7 @@ fun card_value(s, n) =
 fun card_value(_, Num n) = n
   | card_value(_, Ace) = 11
   | card_value(_, _) = 10
+
 			   
 fun remove_card([], c, e) = raise e
   | remove_card(x::cs', c, e) =
@@ -93,3 +94,34 @@ fun remove_card([], c, e) = raise e
     then cs'
     else x::remove_card(cs', c, e)
     
+
+fun all_same_color_old([]) = true
+  | all_same_color_old(x::xs') =
+    case xs' of
+	[] => true
+      | y::ys' => card_color(x) = card_color(y) andalso
+		 all_same_color_old(xs')
+				   
+fun all_same_color([]) = true
+  | all_same_color(x::[]) = true 
+  | all_same_color(head::(neck::rest)) =
+    card_color(head) = card_color(neck) andalso all_same_color((neck::rest))
+
+							      
+fun sum_cards_old(cs) =
+    let
+	fun f(cs, acc) =
+	    case cs of
+		[] => acc
+	      | c::cs' => f(cs',acc+card_value(c))
+    in
+	f(cs,0)
+    end
+
+fun sum_cards(cs) =
+    let
+	fun f([], acc) = acc
+	  | f(c::cs', acc) = f(cs',acc+card_value(c))
+    in
+	f(cs,0)
+    end
