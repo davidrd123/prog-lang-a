@@ -11,21 +11,18 @@ fun same_string(s1 : string, s2 : string) =
 fun all_except_option_old(s : string, lst : string list) =
 *)
 
-fun in_list(s, lst) =
-    case lst of
-	[] => false
-      | hd_lst::tl_lst =>
-	if same_string(s, hd_lst)
-	then true
-	else in_list(s, tl_lst)
+fun in_list(s, []) = false
+  | in_list (s, x :: xs) = 
+    if same_string(s, x)
+    then true
+    else in_list(s, xs)
+			
 
-fun remove_from_list(s, lst) =
-    case lst of
-	[] => []
-      | hd_lst::tl_lst =>
-	if same_string(s, hd_lst)
-	then remove_from_list(s, tl_lst)
-	else hd_lst::remove_from_list(s, tl_lst)
+fun remove_from_list (s, []) = []
+  | remove_from_list (s, x :: xs) = 
+    if same_string(s, x)
+    then remove_from_list(s, xs)
+    else x::remove_from_list(s, xs)
 
 			     
 fun all_except_option(s : string, lst : string list) =
@@ -53,13 +50,13 @@ fun get_substitutions2( subs, s) =
 	aux(subs, [])
     end
 
-
+(*
 fun similar_names(subs, {first=x, middle=y, last=y}) =
     let fun helper
     in
 	x ^ " " ^ y ^ " " ^ z
     end
-			    
+*)			    
 	
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
