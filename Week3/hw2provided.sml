@@ -31,12 +31,12 @@ fun all_except_option(s : string, lst : string list) =
     else NONE
 	     
 
-fun get_substitutions1( subs, s) =
-    case subs of
-	[] => []
-      | xs :: subs' => case all_except_option(s, xs) of
-			   NONE => get_substitutions1(subs', s)
-			 | SOME ys => ys @ get_substitutions1( subs', s)
+							     
+fun get_substitutions1( [], s) = []
+  | get_substitutions1(xs::subs', s) = 
+    case all_except_option(s, xs) of
+	NONE => get_substitutions1(subs', s)
+      | SOME ys => ys @ get_substitutions1( subs', s)
 
 							     
 fun get_substitutions2( subs, s) =
@@ -55,7 +55,7 @@ fun similar_names(subs, {first=x, middle=y, last=y}) =
     in
 	x ^ " " ^ y ^ " " ^ z
     end
-*)			    
+*)	
 	
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
