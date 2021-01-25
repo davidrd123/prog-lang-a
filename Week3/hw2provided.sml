@@ -59,6 +59,15 @@ fun similar_names(subs, {first=f, middle=m, last=l}) =
 	{first=f, middle=m, last=l} :: substitute(get_substitutions2(subs, f))
     end
 
+fun similar_names_acc(subs, {first=f, middle=m, last=l}) =
+    let
+	fun sub_name (sub) = {first=sub, middle=m, last=l}
+	fun substitute ([], acc) = acc
+	  | substitute (x::xs, acc) = substitute(xs, sub_name(x)::acc)
+    in
+	{first=f, middle=m, last=l} :: substitute(get_substitutions2(subs, f),[])
+    end
+
 	
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
@@ -124,4 +133,42 @@ fun sum_cards(cs) =
 	  | f(c::cs', acc) = f(cs',acc+card_value(c))
     in
 	f(cs,0)
+    end
+
+
+fun score(cards, goal) =
+    let
+	val sum = sum_cards(cards)
+	val prelim_score =
+	    if sum > goal
+	    then 3 * (sum - goal)
+	    else (goal - sum)
+    in
+	if all_same_color(cards)
+	then (prelim_score div 2)
+	else prelim_score
+    end
+
+
+
+fun officiate(cards, moves, goal) =
+    let
+	fun continue_play(held_cards, card_list, move_list) =
+	    case move_list of
+		[] => score(held_cards, goal)
+	      | (Draw)::rest =>
+		(case card_list of
+		    [] => score(held_cards, goal)
+		  | c::cs' =>
+		    let
+			val new_score = score(c::held_cards, goal)
+		    in
+			if sum_cards(c::held_cards) > goal
+			then new_score
+			else continue_play(c::held_cards, cs', rest)
+		    end)
+	      | (Discard c)::rest =>
+		continue_play(held_cards, remove_card(card_list, c, IllegalMove), rest)
+    in
+	continue_play([], cards, moves)
     end
