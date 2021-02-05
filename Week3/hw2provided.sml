@@ -26,7 +26,6 @@ fun all_except_option(s : string, lst : string list) =
     if in_list(s, lst)
     then SOME (remove_from_list(s, lst))
     else NONE
-	     
 
 							     
 fun get_substitutions1( [], _) = []
@@ -147,7 +146,7 @@ fun score(cards, goal) =
     end
 
 
-
+(*
 fun officiate(cards, moves, goal) =
     let
 	fun continue_play(held_cards, card_list, move_list) =
@@ -157,15 +156,32 @@ fun officiate(cards, moves, goal) =
 		(case card_list of
 		    [] => score(held_cards, goal)
 		  | c::cs' =>
-		    let
-			val new_score = score(c::held_cards, goal)
-		    in
-			if sum_cards(c::held_cards) > goal
-			then new_score
-			else continue_play(c::held_cards, cs', rest)
-		    end)
+		    if sum_cards(c::held_cards) > goal
+		    then score(c::held_cards, goal)
+		    else continue_play(c::held_cards, cs', rest)
+		)
 	      | (Discard c)::rest =>
 		continue_play(held_cards, remove_card(card_list, c, IllegalMove), rest)
     in
 	continue_play([], cards, moves)
+    end
+*)
+
+
+
+fun officiate(card_list, move_list, goal) =
+    let
+	fun continue_play(cards, moves, held) =
+	    case (cards, moves) of
+		(_, []) => score(held, goal)
+	      | ([], Draw::moves') => score(held, goal)
+	      | (card::cards', move::moves') =>
+		case move of
+		    Discard c => continue_play(held, moves', remove_card(cards, c, IllegalMove))
+		  | Draw => if sum_cards(card::held) > goal
+			    then score(card::held, goal)
+			    else continue_play(cards', moves', card::held) 
+
+    in
+	continue_play(card_list, move_list, [])
     end
