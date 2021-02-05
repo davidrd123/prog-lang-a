@@ -16,7 +16,10 @@ fun in_list(s, []) = false
     if same_string(s, x)
     then true
     else in_list(s, xs)
-			
+
+fun in_list2(s, []) = false
+  | in_list2(s, x::xs) =
+    same_string(s,x) orelse in_list(s, xs)
 
 fun remove_from_list (s, []) = []
   | remove_from_list (s, x :: xs) = 
