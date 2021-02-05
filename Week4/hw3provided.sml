@@ -115,7 +115,7 @@ fun count_wildcards(p) =
     
 
 fun count_wild_and_variable_lengths p =
-    g (fn () => 1) (fn x => String.size(x)) p
+    g (fn () => 1) String.size(x) p
 
 
 fun count_some_var (s, p) =
@@ -139,28 +139,14 @@ fun check_pat(p) =
 	fun extract_strings(p) =
 	    case p of
 		Variable x => [x]
-	     |  TupleP ps => List.foldl(fn (v, acc) => acc @ extract_strings(v)) [] ps
-	     | ConstructorP(_,p) => extract_strings(p)  
-	     | _ => []
+	      | TupleP ps => List.foldl(fn (v, acc) => acc @ extract_strings(v)) [] ps
+	      | ConstructorP(_,p) => extract_strings(p)  
+	      | _ => []
 	fun has_repeats([]) = false
 	  | has_repeats(x::xs) = List.exists (fn x' => x' = x) xs orelse has_repeats(xs)							  
     in
 	(not o has_repeats o extract_strings) p
     end
-
-
-fun match_old (v, p) =
-    case (v,p) of
-	(_, Wildcard) => SOME []
-      | (Unit, UnitP) => SOME[] 
-      | (Const c, ConstP c') => if c = c' then SOME [] else NONE
-      | (Constructor(s,v), ConstructorP(sp,p)) =>
-	if s = sp then match_old(v,p) else NONE
-      | (Tuple vs, TupleP ps) => if List.length vs = List.length ps
-				 then all_answers match_old (ListPair.zip(vs, ps))
-				 else NONE
-      | (v, Variable s) => SOME[(s,v)]
-      | (_,_) => NONE 
 
 
 fun match(v, p) =
