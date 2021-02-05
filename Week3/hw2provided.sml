@@ -100,29 +100,12 @@ fun remove_card([], c, e) = raise e
     else x::remove_card(cs', c, e)
     
 
-fun all_same_color_old([]) = true
-  | all_same_color_old(x::xs') =
-    case xs' of
-	[] => true
-      | y::ys' => card_color(x) = card_color(y) andalso
-		 all_same_color_old(xs')
-				   
 fun all_same_color([]) = true
   | all_same_color(x::[]) = true 
   | all_same_color(head::(neck::rest)) =
     card_color(head) = card_color(neck) andalso all_same_color((neck::rest))
 
 							      
-fun sum_cards_old(cs) =
-    let
-	fun f(cs, acc) =
-	    case cs of
-		[] => acc
-	      | c::cs' => f(cs',acc+card_value(c))
-    in
-	f(cs,0)
-    end
-
 fun sum_cards(cs) =
     let
 	fun f([], acc) = acc
@@ -144,28 +127,6 @@ fun score(cards, goal) =
 	then (prelim_score div 2)
 	else prelim_score
     end
-
-
-(*
-fun officiate(cards, moves, goal) =
-    let
-	fun continue_play(held_cards, card_list, move_list) =
-	    case move_list of
-		[] => score(held_cards, goal)
-	      | (Draw)::rest =>
-		(case card_list of
-		    [] => score(held_cards, goal)
-		  | c::cs' =>
-		    if sum_cards(c::held_cards) > goal
-		    then score(c::held_cards, goal)
-		    else continue_play(c::held_cards, cs', rest)
-		)
-	      | (Discard c)::rest =>
-		continue_play(held_cards, remove_card(card_list, c, IllegalMove), rest)
-    in
-	continue_play([], cards, moves)
-    end
-*)
 
 
 
